@@ -1,0 +1,219 @@
+<div class="page-container">
+    <div class="page-header">YOUR SHOPPING BAG</div>
+    <div class="product-list-header">
+        <div class="product-list-count">{{productList.length}} ITEMS</div>
+        <div class="details-header-for-desktop product-list-size">SIZE</div>
+        <div class="details-header-for-desktop product-list-qty">QTY</div>
+        <div class="details-header-for-desktop product-list-price">PRICE</div>
+        <div class="details-header-for-desktop product-list-final-price">FINAL PRICE</div>
+    </div>
+
+    <div class="shopping-product-list">
+        <div *ngFor="let product of productList">
+            <div class="shopping-product">
+
+                <div class="product product-image">
+                    <img src="app/assets/T{{product.p_id}}.jpg" class="product-image-content">
+                </div>
+
+                <div class="product-detail-summary-container">
+
+                    <div class="product product-details-container">
+                        <div class="product-details-content">
+                            <div class="product-name">{{product.p_name.toUpperCase()}}</div>
+                            <div class="product-style">STYLE #: {{product.p_style.toUpperCase()}}</div>
+                            <div class="product-color">COLOR: {{product.p_variation.toUpperCase()}}</div>
+                        </div>
+                    </div>
+
+                    <div class="product product-summary-container">
+
+                        <div class="product-summary-content">
+
+                            <div class="product-size-container">
+                                <div class="product-size-text">SIZE: </div>
+                                <div class="product-size">{{product.p_selected_size.code}}</div>
+                            </div>
+
+                            <div class="product-quantity-container">
+
+                                <div class="product-quantity-text">QTY: </div>
+                                <input class="product-input"
+                                    (change)="onProductQuantityChange($event, product)"
+                                    value={{product.p_quantity}}>
+
+                            </div>
+
+                            <div class="product-price-container">
+                                <div class="product-price-text">PRICE: </div>
+                                <div class="product-price">
+
+                                    <div class="product-original-price"
+                                            *ngIf="product.p_originalprice!==product.p_price">
+                                        {{product.c_currency}} {{product.p_originalprice.toFixed(2)}}</div>
+
+                                    <div class="product-actual-price">
+                                        {{product.c_currency}} {{product.p_price.toFixed(2)}}</div>
+
+                                </div>
+                            </div>
+
+                            <div class="product-final-price-container">
+                                <div class="product-final-price-text"> FINAL PRICE: </div>
+                                <div class="product-final-price">{{product.c_currency}} {{(product.p_price * product.p_quantity).toFixed(2)}}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="product-modification-container">
+
+                    <div class="product-modification-content">
+                        <div class="modify-product edit-product"
+                                (click)="editProduct($event, product)">
+                            EDIT</div>
+
+                        <div class="modify-product remove-product-from-list"
+                                (click)="removeProductFromList($event, product)">
+                            X REMOVE</div>
+
+                        <!--<div class="modify-product save-for-later">SAVE FOR LATER</div>-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="product-summary-and-suggestion-container">
+        <div class="product-summary-and-suggestion-content">
+            <div class="suggestions-block-container">
+                <div class="suggestions-block-content">
+                    <p>Need help or have suggestion ?</p>
+                    <p>Call Costumer Care Service at</p>
+                    <p>1-800-555-5555</p>
+                    <p>See return and Exchange policy.</p>
+                </div>
+            </div>
+
+            <div class="checkout-block-container">
+                <div class="checkout-block-content">
+
+                    <div class="promo-block-container">
+                        <div class="promo-block-content">
+                            <div class="promo enter-promo-text">ENTER PROMOTION CODE OR GIFT CARD</div>
+                            <input class="promo promo-code-input"
+                                    spellcheck="false"
+                                    autocorrect="off"
+                                    autocomplete="off"
+                                    disabled="true"
+                                    value="{{discountCode}}">
+
+                            <div class="promo apply-button" title="Available Coupon Already Applied">APPLY</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-block-container">
+                        <div class="summary-block-content">
+
+                            <div class="summary sub-total-block">
+                                <div class="summary-text sub-total-text">SUB TOTAL</div>
+                                <div class="summary-value sub-total-value">{{subTotal.toFixed(2)}}</div>
+                            </div>
+                            <div class="summary discount-block">
+                                <div class="summary-text discount-text">PROMOTION CODE {{discountCode}} APPLIED</div>
+                                <div class="summary-value discount-value">$-{{discountAmount.toFixed(2)}}</div>
+                            </div>
+                            <div class="summary estimated-total-block">
+                                <div class="summary-text estimated-total-text">ESTIMATED TOTAL</div>
+                                <div class="summary-value estimated-total-value">{{estimatedTotal.toFixed(2)}}</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="checkout-button-block-container">
+                        <div class="checkout-button-block-content">
+                            <div class="checkout-button">CHECKOUT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-backdrop-container edit-product-modal-container"  *ngIf="isModalVisible"
+            [ngStyle]="modalStyle">
+
+        <div class="modal-close-button-container">
+            <div class="modal-close-button-content"
+                    (click)="onCrossClick($event)">
+                X</div>
+        </div>
+
+        <div class="modal-container-content">
+
+            <div class="modal-selected-product modal-selected-product-image-container">
+                <div class="modal-selected-product-image-content">
+                    <img src="app/assets/T{{productToEdit.p_id}}.jpg" style="height:200px">
+                </div>
+            </div>
+
+            <div class="modal-selected-product modal-product modal-selected-product-summary-container">
+                <div class="modal-selected-product-summary-content">
+                    <div class="modal-selected-product-name">{{productToEdit.p_name.toUpperCase()}}</div>
+                    <div class="modal-selected-product-price">$ {{productToEdit.p_quantity * productToEdit.p_price}}</div>
+                    <div class="modal-selected-product-av-colors-text">AVAILABLE COLORS</div>
+
+                    <div class="modal-select-product-available-colors-container">
+                        <div class="modal-select-product-available-colors-content"
+                            *ngFor="let color of productToEdit.p_available_options.colors">
+                                <div class="modal-select-product-available-color"
+                                        [ngClass]="{'selected-color': newEdittedColor === color.name}"
+                                        (click)="onNewColorClick($event, color)"
+                                        [ngStyle]="{'background-color': color.hexcode}">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="edit-product-size-text">SIZE: </div>
+                        <div class="edit-product-size-dropdown">
+                            <select class="dropdown-field-input"
+                                    (change)="onEditProductSizeChange($event)">
+                                <option *ngFor="let option of productToEdit.p_available_options.sizes"
+                                        value="{{option.code}}">
+                                    {{option.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="edit-product-quantity-text">QTY : </div>
+                        <div class="edit-product-quantity">
+                            <input class="edit-product-quantity-input"
+                                    (change)="onEditProductQuantityChange($event)"
+                                    value="{{productToEdit.p_quantity}}">
+                        </div>
+                    </div>
+
+                    <div class="modal-product-update"
+                            (click)="onSavingEditedProduct($event)">
+                        UPDATE
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="isModalVisible"
+    (click)=onBackDropClick($event)></div>
